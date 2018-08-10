@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[4]:
 
 
 import os
@@ -32,23 +32,31 @@ do_preprocess = True
 from_checkpoint = False
 
 
-# In[2]:
+# In[8]:
 
 
-data_dir = '/home/mele/datasets/plant_deases/color/Potato___healthy/' # Data
-data_resized_dir = "img_resized"# Resized data
+data_dir = '/home/mele/datasets/plant_deases/color/' # Data
+data_resized_dir = "img_resized/"# Resized data
+
+generated_dir = "generated_plant_leaf/"
 
 if do_preprocess == True:
-    if (not os.path.exists):
+    
+    if (not os.path.exists(data_resized_dir)):
         os.mkdir(data_resized_dir)
+    
+    for a_dir in os.listdir(data_dir):
+        new_dir = data_resized_dir+a_dir
+        if (not os.path.exists(new_dir)):
+            os.mkdir(new_dir)
+            
+        for fl in os.listdir(data_dir+a_dir):
+            image = cv2.imread(os.path.join(data_dir,a_dir, fl))
+            image = cv2.resize(image, (32, 32))
+            cv2.imwrite(os.path.join(new_dir, fl), image)
 
-    for each in os.listdir(data_dir):
-        image = cv2.imread(os.path.join(data_dir, each))
-        image = cv2.resize(image, (64, 64))
-        cv2.imwrite(os.path.join(data_resized_dir, each), image)
 
-
-# In[56]:
+# In[10]:
 
 
 # Helper functions
@@ -118,8 +126,8 @@ class Dataset(object):
         :param dataset_name: Database name
         :param data_files: List of files in the database
         """
-        IMAGE_WIDTH = 64
-        IMAGE_HEIGHT = 64
+        IMAGE_WIDTH = 32
+        IMAGE_HEIGHT = 32
 
         self.image_mode = 'RGB'
         image_channels = 3
@@ -147,17 +155,17 @@ class Dataset(object):
             yield data_batch / IMAGE_MAX_VALUE - 0.5
 
 
-# In[44]:
+# In[11]:
 
 
 # Explore the data
 
 show_n_images = 25
-images = get_batch(glob(os.path.join(data_dir, '*.JPG'))[:show_n_images], 64, 64, 'RGB')
+images = get_batch(glob(os.path.join(data_resized_dir+'Apple___Apple_scab', '*.JPG'))[:show_n_images], 64, 64, 'RGB')
 plt.imshow(images_square_grid(images, 'RGB'))
 
 
-# In[45]:
+# In[12]:
 
 
 # Taken from Udacity face generator project
@@ -176,7 +184,7 @@ else:
     print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
 
 
-# In[46]:
+# In[13]:
 
 
 def model_inputs(real_dim, z_dim):
@@ -186,7 +194,8 @@ def model_inputs(real_dim, z_dim):
     :param z_dim: The dimension of Z
     :return: Tuple of (tensor of real input images, tensor of z data, learning rate G, learning rate D)
     """
-    inputs_real = tf.placeholder(tf.float32, (None, *real_dim), name='inputs_real')
+#     inputs_real = tf.placeholder(tf.float32, (None, *real_dim), name='inputs_real')
+    inputs_real = tf.placeholder(tf.float32, (None, real_dim), name='inputs_real')
     inputs_z = tf.placeholder(tf.float32, (None, z_dim), name="input_z")
     learning_rate_G = tf.placeholder(tf.float32, name="learning_rate_G")
     learning_rate_D = tf.placeholder(tf.float32, name="learning_rate_D")
@@ -194,7 +203,7 @@ def model_inputs(real_dim, z_dim):
     return inputs_real, inputs_z, learning_rate_G, learning_rate_D
 
 
-# In[47]:
+# In[14]:
 
 
 # Generator
@@ -301,7 +310,7 @@ def generator(z, output_channel_dim, is_train=True):
         return out
 
 
-# In[48]:
+# In[15]:
 
 
 # Discriminator
@@ -423,7 +432,7 @@ def discriminator(x, is_reuse=False, alpha = 0.2):
         return out, logits
 
 
-# In[49]:
+# In[16]:
 
 
 def model_loss(input_real, input_z, output_channel_dim, alpha):
@@ -458,7 +467,7 @@ def model_loss(input_real, input_z, output_channel_dim, alpha):
     return d_loss, g_loss
 
 
-# In[50]:
+# In[17]:
 
 
 def model_optimizers(d_loss, g_loss, lr_D, lr_G, beta1):
@@ -488,7 +497,7 @@ def model_optimizers(d_loss, g_loss, lr_D, lr_G, beta1):
     return d_train_opt, g_train_opt
 
 
-# In[51]:
+# In[18]:
 
 
 def show_generator_output(sess, n_images, input_z, out_channel_dim, image_mode, image_path, save, show):
@@ -513,14 +522,14 @@ def show_generator_output(sess, n_images, input_z, out_channel_dim, image_mode, 
     
     if save == True:
         # Save image
-        images_grid.save(image_path, 'JPG')
+            images_grid.save(image_path, 'JPEG')
     
     if show == True:
         plt.imshow(images_grid, cmap=cmap)
         plt.show()
 
 
-# In[52]:
+# In[19]:
 
 
 from_checkpoint = False
@@ -568,7 +577,7 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
             for epoch_i in range(epoch_count):        
                 num_epoch += 1
 
-                if num_epoch % 10 == 0:
+                if num_epoch % 5 == 0:
 
                     # Save model every 5 epochs
                     #if not os.path.exists("models/" + version):
@@ -581,7 +590,7 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
                     batch_z = np.random.uniform(-1, 1, size=(batch_size, z_dim))
 
                     i += 1
-
+                    
                     # Run optimizers
                     _ = sess.run(d_opt, feed_dict={input_images: batch_images, input_z: batch_z, lr_D: learning_rate_D})
                     _ = sess.run(g_opt, feed_dict={input_images: batch_images, input_z: batch_z, lr_G: learning_rate_G})
@@ -589,39 +598,38 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
                     if i % 10 == 0:
                         train_loss_d = d_loss.eval({input_z: batch_z, input_images: batch_images})
                         train_loss_g = g_loss.eval({input_z: batch_z})
-
                         # Save it
                         image_name = str(i) + ".JPG"
-                        image_path = "generated_plant_leaf/" + image_name
-                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, False) 
+                        
+                        new_path = generated_dir+str(i)+'/'
+                        if (not os.path.exists(image_path)):
+                            os.mkdir(new_path)
+                        image_path = new_path + image_name
+                        
+                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, False, True) 
 
                     # Print every 5 epochs (for stability overwize the jupyter notebook will bug)
                     if i % 50 == 0:
-
-                        image_name = str(i) + ".JPG"
-                        image_path = "generated_plant_leaf" + image_name
                         print("Epoch {}/{}...".format(epoch_i+1, epochs),
                               "Discriminator Loss: {:.4f}...".format(train_loss_d),
                               "Generator Loss: {:.4f}".format(train_loss_g))
-                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, False, True)
-                
-            
-                    
+                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, True)    
+                    print(i)
     return losses
 
 
-# In[63]:
+# In[20]:
 
 
 # Size input image for discriminator
 # real_size = (256,256,3)
 
 # Size of latent vector to generator
-z_dim = 50
+z_dim = 16
 learning_rate_D =  .00005 # Thanks to Alexia Jolicoeur Martineau https://ajolicoeur.wordpress.com/cats/
 learning_rate_G = 2e-4 # Thanks to Alexia Jolicoeur Martineau https://ajolicoeur.wordpress.com/cats/
-batch_size = 64
-epochs = 51
+batch_size = 32
+epochs = 20
 alpha = 0.2
 beta1 = 0.5
 
@@ -629,11 +637,15 @@ beta1 = 0.5
 #model = DGAN(real_size, z_size, learning_rate, alpha, beta1)
 
 
-# In[ ]:
+# In[21]:
 
 
 # Load the data and train the network here
-dataset = Dataset(glob(os.path.join('./img_resized', '/*.JPG')))
+dataset = Dataset(glob(os.path.join(data_resized_dir+'Apple___Apple_scab', '*.JPG')))
+
+# for batch_images in dataset.get_batches(32):
+#     batch_z = np.random.uniform(-1, 1, size=(32, 50))
+#     print(batch_z)
 
 with tf.Graph().as_default():
     losses = train(epochs, batch_size, z_dim, learning_rate_D, learning_rate_G, beta1, dataset.get_batches,
@@ -649,4 +661,3 @@ plt.plot(losses.T[0], label='Discriminator', alpha=0.5)
 plt.plot(losses.T[1], label='Generator', alpha=0.5)
 plt.title("Training Losses")
 plt.legend()
-
