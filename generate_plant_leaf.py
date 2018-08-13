@@ -609,14 +609,14 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
                             os.mkdir(new_path)
                         image_path = new_path + image_name
                         
-                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, True) 
+                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, False) 
 
                     # Print every 5 epochs (for stability overwize the jupyter notebook will bug)
                     if i % 5 == 0:
                         print("Epoch {}/{}...".format(epoch_i+1, epochs),
                               "Discriminator Loss: {:.4f}...".format(train_loss_d),
                               "Generator Loss: {:.4f}".format(train_loss_g))
-                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, True)    
+                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, False)    
                     print(i)
     return losses
 
