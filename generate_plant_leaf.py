@@ -598,7 +598,7 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
                     _ = sess.run(d_opt, feed_dict={input_images: batch_images, input_z: batch_z, lr_D: learning_rate_D})
                     _ = sess.run(g_opt, feed_dict={input_images: batch_images, input_z: batch_z, lr_G: learning_rate_G})
 
-                    if i % 10 == 0:
+                    if i % 2 == 0:
                         train_loss_d = d_loss.eval({input_z: batch_z, input_images: batch_images})
                         train_loss_g = g_loss.eval({input_z: batch_z})
                         # Save it
@@ -609,10 +609,10 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
                             os.mkdir(new_path)
                         image_path = new_path + image_name
                         
-                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, False, True) 
+                        show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, True) 
 
                     # Print every 5 epochs (for stability overwize the jupyter notebook will bug)
-                    if i % 50 == 0:
+                    if i % 5 == 0:
                         print("Epoch {}/{}...".format(epoch_i+1, epochs),
                               "Discriminator Loss: {:.4f}...".format(train_loss_d),
                               "Generator Loss: {:.4f}".format(train_loss_g))
