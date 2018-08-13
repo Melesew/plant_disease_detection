@@ -52,7 +52,7 @@ if do_preprocess == True:
             
         img_count = 0
         for fl in os.listdir(data_dir+a_dir):
-            if (img_count = 1000): # reshape 1000 images in each folder
+            if (img_count <= 999): # reshape 1000 images in each folder
                 image = cv2.imread(os.path.join(data_dir,a_dir, fl))
                 image = cv2.resize(image, (64, 64))
                 cv2.imwrite(os.path.join(new_dir, fl), image)
