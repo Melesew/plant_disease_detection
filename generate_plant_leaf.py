@@ -26,7 +26,7 @@ import time
 
 import cv2
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 
 do_preprocess = True
 from_checkpoint = False
@@ -50,10 +50,13 @@ if do_preprocess == True:
         if (not os.path.exists(new_dir)):
             os.mkdir(new_dir)
             
+        img_count = 0
         for fl in os.listdir(data_dir+a_dir):
-            image = cv2.imread(os.path.join(data_dir,a_dir, fl))
-            image = cv2.resize(image, (32, 32))
-            cv2.imwrite(os.path.join(new_dir, fl), image)
+            if (img_count <= 999): # reshape 200 images in each folder
+                image = cv2.imread(os.path.join(data_dir,a_dir, fl))
+                image = cv2.resize(image, (64, 64))
+                cv2.imwrite(os.path.join(new_dir, fl), image)
+            img_count += 1
 
 
 # In[10]:
@@ -126,8 +129,8 @@ class Dataset(object):
         :param dataset_name: Database name
         :param data_files: List of files in the database
         """
-        IMAGE_WIDTH = 32
-        IMAGE_HEIGHT = 32
+        IMAGE_WIDTH = 64
+        IMAGE_HEIGHT = 64
 
         self.image_mode = 'RGB'
         image_channels = 3
@@ -147,7 +150,7 @@ class Dataset(object):
         while current_index + batch_size <= self.shape[0]:
             data_batch = get_batch(
                 self.data_files[current_index:current_index + batch_size],
-                *self.shape[1:3],
+                self.shape[1:3],
                 self.image_mode)
             
             current_index += batch_size
@@ -195,7 +198,7 @@ def model_inputs(real_dim, z_dim):
     :return: Tuple of (tensor of real input images, tensor of z data, learning rate G, learning rate D)
     """
 #     inputs_real = tf.placeholder(tf.float32, (None, *real_dim), name='inputs_real')
-    inputs_real = tf.placeholder(tf.float32, (None, real_dim), name='inputs_real')
+    inputs_real = tf.placeholder(tf.float32, (None, *real_dim), name='inputs_real')
     inputs_z = tf.placeholder(tf.float32, (None, z_dim), name="input_z")
     learning_rate_G = tf.placeholder(tf.float32, name="learning_rate_G")
     learning_rate_D = tf.placeholder(tf.float32, name="learning_rate_D")
@@ -602,7 +605,7 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
                         image_name = str(i) + ".JPG"
                         
                         new_path = generated_dir+str(i)+'/'
-                        if (not os.path.exists(image_path)):
+                        if (not os.path.exists(new_path)):
                             os.mkdir(new_path)
                         image_path = new_path + image_name
                         
@@ -625,10 +628,10 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
 # real_size = (256,256,3)
 
 # Size of latent vector to generator
-z_dim = 16
+z_dim = 100
 learning_rate_D =  .00005 # Thanks to Alexia Jolicoeur Martineau https://ajolicoeur.wordpress.com/cats/
 learning_rate_G = 2e-4 # Thanks to Alexia Jolicoeur Martineau https://ajolicoeur.wordpress.com/cats/
-batch_size = 32
+batch_size = 64
 epochs = 20
 alpha = 0.2
 beta1 = 0.5
@@ -661,3 +664,4 @@ plt.plot(losses.T[0], label='Discriminator', alpha=0.5)
 plt.plot(losses.T[1], label='Generator', alpha=0.5)
 plt.title("Training Losses")
 plt.legend()
+
