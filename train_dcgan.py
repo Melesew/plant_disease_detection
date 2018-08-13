@@ -277,7 +277,7 @@ def train_dcgan(batch_size, epochs, image_shape, dataset_path):
 
 
 def main():
-    dataset_path = 'img_resized/Peach___Bacterial_spot/'
+    dataset_path = './img_resized/'
     batch_size = 64
     image_shape = (64, 64, 3)
     epochs = 190
