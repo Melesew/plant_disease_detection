@@ -31,9 +31,7 @@ import matplotlib.pyplot as plt
 do_preprocess = False
 from_checkpoint = False
 
-i
 # In[8]:
-
 
 data_dir = '../color/train/' # Data
 data_resized_dir = "img_resized/"# Resized data
