@@ -35,7 +35,7 @@ from_checkpoint = False
 # In[8]:
 
 
-data_dir = '/home/mele/datasets/plant_deases/color/' # Data
+data_dir = '../color/train/' # Data
 data_resized_dir = "img_resized/"# Resized data
 
 generated_dir = "generated_plant_leaf/"
