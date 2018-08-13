@@ -163,9 +163,9 @@ class Dataset(object):
 
 # Explore the data
 
-show_n_images = 25
-images = get_batch(glob(os.path.join(data_resized_dir+'Apple___Apple_scab', '*.JPG'))[:show_n_images], 64, 64, 'RGB')
-plt.imshow(images_square_grid(images, 'RGB'))
+# show_n_images = 25
+# images = get_batch(glob(os.path.join(data_resized_dir+'Apple___Apple_scab', '*.JPG'))[:show_n_images], 64, 64, 'RGB')
+# plt.imshow(images_square_grid(images, 'RGB'))
 
 
 # In[12]:
