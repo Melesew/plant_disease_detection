@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 do_preprocess = False
 from_checkpoint = False
 
-
+i
 # In[8]:
 
 
@@ -629,10 +629,10 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
 
 # Size of latent vector to generator
 z_dim = 100
-learning_rate_D =  .00005 # Thanks to Alexia Jolicoeur Martineau https://ajolicoeur.wordpress.com/cats/
+learning_rate_D =  .0005 # Thanks to Alexia Jolicoeur Martineau https://ajolicoeur.wordpress.com/cats/
 learning_rate_G = 2e-4 # Thanks to Alexia Jolicoeur Martineau https://ajolicoeur.wordpress.com/cats/
 batch_size = 64
-epochs = 20
+epochs = 51
 alpha = 0.2
 beta1 = 0.5
 
@@ -658,10 +658,10 @@ with tf.Graph().as_default():
 # In[ ]:
 
 
-fig, ax = plt.subplots()
-losses = np.array(losses)
-plt.plot(losses.T[0], label='Discriminator', alpha=0.5)
-plt.plot(losses.T[1], label='Generator', alpha=0.5)
-plt.title("Training Losses")
-plt.legend()
+# fig, ax = plt.subplots()
+# losses = np.array(losses)
+# plt.plot(losses.T[0], label='Discriminator', alpha=0.5)
+# plt.plot(losses.T[1], label='Generator', alpha=0.5)
+# plt.title("Training Losses")
+# plt.legend()
 
