@@ -28,7 +28,7 @@ import cv2
 import matplotlib.pyplot as plt
 #get_ipython().run_line_magic('matplotlib', 'inline')
 
-do_preprocess = True
+do_preprocess = False
 from_checkpoint = False
 
 
