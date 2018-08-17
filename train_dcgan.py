@@ -140,7 +140,7 @@ def save_generated_images(generated_images, epoch, batch_number):
 #         fig.axes.get_xaxis().set_visible(False)
 #         fig.axes.get_yaxis().set_visible(False)
 
-    plt.tight_layout()
+#     plt.tight_layout()
     save_name = 'generated images/generatedSamples_epoch' + str(
             epoch + 1) + '_batch' + str(batch_number + 1) + '.png'
 
