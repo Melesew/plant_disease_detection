@@ -28,7 +28,7 @@ import cv2
 import matplotlib.pyplot as plt
 #get_ipython().run_line_magic('matplotlib', 'inline')
 
-do_preprocess = False
+do_preprocess = True
 from_checkpoint = False
 
 # In[8]:
@@ -52,7 +52,7 @@ if do_preprocess == True:
         for fl in os.listdir(data_dir+a_dir):
             if (img_count <= 999): # reshape 1000 images in each folder
                 image = cv2.imread(os.path.join(data_dir,a_dir, fl))
-                image = cv2.resize(image, (64, 64))
+                image = cv2.resize(image, (100, 100))
                 cv2.imwrite(os.path.join(new_dir, fl), image)
             img_count += 1
 
@@ -127,8 +127,8 @@ class Dataset(object):
         :param dataset_name: Database name
         :param data_files: List of files in the database
         """
-        IMAGE_WIDTH = 64
-        IMAGE_HEIGHT = 64
+        IMAGE_WIDTH = 100
+        IMAGE_HEIGHT = 100
 
         self.image_mode = 'RGB'
         image_channels = 3
@@ -601,11 +601,8 @@ def train(epoch_count, batch_size, z_dim, learning_rate_D, learning_rate_G, beta
                         train_loss_g = g_loss.eval({input_z: batch_z})
                         # Save it
                         image_name = str(i) + ".JPG"
-                        
-                        new_path = generated_dir+str(i)+'/'
-                        if (not os.path.exists(new_path)):
-                            os.mkdir(new_path)
-                        image_path = new_path + image_name
+                       
+                        image_path = generated_dir+ image_name
                         
                         show_generator_output(sess, 4, input_z, data_shape[3], data_image_mode, image_path, True, False) 
 
