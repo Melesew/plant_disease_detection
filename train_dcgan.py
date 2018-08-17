@@ -125,28 +125,28 @@ def construct_generator():
 # Displays a figure of the generated images and saves them in as .png image
 def save_generated_images(generated_images, epoch, batch_number):
 
-    plt.figure(figsize=(8, 8), num=2)
-    gs1 = gridspec.GridSpec(8, 8)
-    gs1.update(wspace=0, hspace=0)
+    plt.figure(figsize=(8, 8))
+#     gs1 = gridspec.GridSpec(8, 8)
+#     gs1.update(wspace=0, hspace=0)
 
     for i in range(64):
-        ax1 = plt.subplot(gs1[i])
-        ax1.set_aspect('equal')
+#         ax1 = plt.subplot(gs1[i])
+#         ax1.set_aspect('equal')
         image = generated_images[i, :, :, :]
         image += 1
         image *= 127.5
-        fig = plt.imshow(image.astype(np.uint8))
-        plt.axis('off')
-        fig.axes.get_xaxis().set_visible(False)
-        fig.axes.get_yaxis().set_visible(False)
+#         fig = plt.imshow(image.astype(np.uint8))
+#         plt.axis('off')
+#         fig.axes.get_xaxis().set_visible(False)
+#         fig.axes.get_yaxis().set_visible(False)
 
-    plt.tight_layout()
-    save_name = 'generated images/generatedSamples_epoch' + str(
-        epoch + 1) + '_batch' + str(batch_number + 1) + '.png'
+        plt.tight_layout()
+        save_name = 'generated images/generatedSamples_epoch' + str(
+            epoch + 1) + '_batch' + str(batch_number + 1) + '.png'
 
-    plt.savefig(save_name, bbox_inches='tight', pad_inches=0)
-    plt.pause(0.0000000001)
-    plt.show()
+        plt.savefig(save_name, bbox_inches='tight', pad_inches=0)
+    #     plt.pause(0.0000000001)
+#     plt.show()
 
 
 # Main train function
@@ -260,20 +260,20 @@ def train_dcgan(batch_size, epochs, image_shape, dataset_path):
             discriminator.save('models/discriminator_epoch' +
                                str(epoch) + '.hdf5')
 
-        # Each epoch update the loss graphs
-        plt.figure(1)
-        plt.plot(batches, adversarial_loss, color='green',
-                 label='Generator Loss')
-        plt.plot(batches, discriminator_loss, color='blue',
-                 label='Discriminator Loss')
-        plt.title("DCGAN Train")
-        plt.xlabel("Batch Iteration")
-        plt.ylabel("Loss")
-        if epoch == 0:
-            plt.legend()
-        plt.pause(0.0000000001)
-        plt.show()
-        plt.savefig('trainingLossPlot.png')
+#         # Each epoch update the loss graphs
+#         plt.figure(1)
+#         plt.plot(batches, adversarial_loss, color='green',
+#                  label='Generator Loss')
+#         plt.plot(batches, discriminator_loss, color='blue',
+#                  label='Discriminator Loss')
+#         plt.title("DCGAN Train")
+#         plt.xlabel("Batch Iteration")
+#         plt.ylabel("Loss")
+#         if epoch == 0:
+#             plt.legend()
+#         plt.pause(0.0000000001)
+#         plt.show()
+#         plt.savefig('trainingLossPlot.png')
 
 
 def main():
