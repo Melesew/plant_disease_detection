@@ -129,12 +129,12 @@ def save_generated_images(generated_images, epoch, batch_number):
 #     gs1 = gridspec.GridSpec(8, 8)
 #     gs1.update(wspace=0, hspace=0)
 
-    for i in range(64):
-#         ax1 = plt.subplot(gs1[i])
-#         ax1.set_aspect('equal')
-        image = generated_images[i, :, :, :]
-        image += 1
-        image *= 127.5
+#     for i in range(64):
+# #         ax1 = plt.subplot(gs1[i])
+# #         ax1.set_aspect('equal')
+#         image = generated_images[i, :, :, :]
+#         image += 1
+#         image *= 127.5
 #         fig = plt.imshow(image.astype(np.uint8))
 #         plt.axis('off')
 #         fig.axes.get_xaxis().set_visible(False)
