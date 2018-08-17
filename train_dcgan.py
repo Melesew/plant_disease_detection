@@ -125,7 +125,7 @@ def construct_generator():
 # Displays a figure of the generated images and saves them in as .png image
 def save_generated_images(generated_images, epoch, batch_number):
 
-    plt.figure(figsize=(8, 8))
+#     plt.figure(figsize=(8, 8))
 #     gs1 = gridspec.GridSpec(8, 8)
 #     gs1.update(wspace=0, hspace=0)
 
