@@ -11,7 +11,7 @@ from keras.layers.advanced_activations import LeakyReLU
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+matplotlib.use('Agg')
 
 
 # Here is where we will load the dataset stored in dataset_path. In this script
