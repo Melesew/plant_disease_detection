@@ -2,6 +2,7 @@ import time
 import os
 import matplotlib
 import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 import matplotlib.gridspec as gridspec
 import numpy as np
 
@@ -12,7 +13,7 @@ from keras.layers.advanced_activations import LeakyReLU
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
-matplotlib.use('Agg')
+
 
 
 # Here is where we will load the dataset stored in dataset_path. In this script
@@ -124,30 +125,29 @@ def construct_generator():
 
 
 # Displays a figure of the generated images and saves them in as .png image
-def save_generated_images(generated_images, epoch, batch_number):
+def save_generated_images(generated_images, epochs):
 
-#     plt.figure(figsize=(8, 8))
-#     gs1 = gridspec.GridSpec(8, 8)
-#     gs1.update(wspace=0, hspace=0)
+    # plt.figure(figsize=(8, 8), num=2)
+    # gs1 = gridspec.GridSpec(8, 8)
+    # gs1.update(wspace=0, hspace=0)
 
-#     for i in range(64):
-# #         ax1 = plt.subplot(gs1[i])
-# #         ax1.set_aspect('equal')
-#         image = generated_images[i, :, :, :]
-#         image += 1
-#         image *= 127.5
-#         fig = plt.imshow(image.astype(np.uint8))
-#         plt.axis('off')
-#         fig.axes.get_xaxis().set_visible(False)
-#         fig.axes.get_yaxis().set_visible(False)
+    for i in range(64):
+        # ax1 = plt.subplot(gs1[i])
+        # ax1.set_aspect('equal')
+        image = generated_images[i, :, :, :]
+        image += 1
+        image *= 127.5
+        fig = plt.imshow(image.astype(np.uint8))
+        plt.axis('off')
+        fig.axes.get_xaxis().set_visible(False)
+        fig.axes.get_yaxis().set_visible(False)
 
-#     plt.tight_layout()
-    save_name = 'generated images/generatedSamples_epoch' + str(
-            epoch + 1) + '_batch' + str(batch_number + 1) + '.png'
+        plt.tight_layout()
+        save_name = 'generated_plant_leaf/'+str(epochs)[1]+ str(i)+ '.png'
 
-    plt.savefig(save_name, bbox_inches='tight', pad_inches=0)
-    #     plt.pause(0.0000000001)
-#     plt.show()
+        plt.savefig(save_name, bbox_inches='tight', pad_inches=0)
+    # plt.pause(0.0000000001)
+    # plt.show()
 
 
 # Main train function
@@ -170,8 +170,8 @@ def train_dcgan(batch_size, epochs, image_shape, dataset_path):
     # Create a dataset Generator with help of keras
     dataset_generator = load_dataset(dataset_path, batch_size, image_shape)
 
-    # 11788 is the total number of images on the bird dataset
-    number_of_batches = int(11788 / batch_size)
+    # 27380 is the total number of images on the bird dataset
+    number_of_batches = int(27380 // batch_size)
 
     # Variables that will be used to plot the losses from the discriminator and
     # the adversarial models
@@ -238,24 +238,29 @@ def train_dcgan(batch_size, epochs, image_shape, dataset_path):
             adversarial_loss = np.append(adversarial_loss, g_loss)
             batches = np.append(batches, current_batch)
 
-            # Each 50 batches show and save images
-            if((batch_number + 1) % 50 == 0 and
-               current_batch_size == batch_size):
-                save_generated_images(generated_images, epoch, batch_number)
-
             time_elapsed = time.time() - start_time
 
             # Display and plot the results
-            print("     Batch " + str(batch_number + 1) + "/" +
+            print(" Batch " + str(batch_number + 1) + "/" +
                   str(number_of_batches) +
                   " generator loss | discriminator loss : " +
                   str(g_loss) + " | " + str(d_loss) + ' - batch took ' +
                   str(time_elapsed) + ' s.')
 
-            current_batch += 1
+            if (epoch > 10):
+                save_generated_images(generated_images)
+            # if (epoch > 100):
+              # # Each 50 batches show and save images
+              #   if((batch_number + 1) % 5 == 0 and
+              #     current_batch_size == batch_size):
+                  
+              #     save_generated_images(generated_images)
+                  
+              #     current_batch += 1
+              # save_generated_images(generated_images)
 
         # Save the model weights each 5 epochs
-        if (epoch + 1) % 5 == 0:
+        if (epoch + 1) % 2 == 0:
             discriminator.trainable = True
             generator.save('models/generator_epoch' + str(epoch) + '.hdf5')
             discriminator.save('models/discriminator_epoch' +
@@ -281,9 +286,8 @@ def main():
     dataset_path = './img_resized/'
     batch_size = 64
     image_shape = (64, 64, 3)
-    epochs = 190
-    train_dcgan(batch_size, epochs,
-                image_shape, dataset_path)
+    epochs = 15
+    train_dcgan(batch_size, epochs, image_shape, dataset_path)
 
 if __name__ == "__main__":
     main()
